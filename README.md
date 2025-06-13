@@ -6,7 +6,7 @@
   <img src="https://readme-hero-stats.vercel.app/api?username=khafidmedheb&title=TestoJarvis%20%7C%20AI-powered%20Git%20Init%20Automation&font=Source+Code+Pro&show=followers,repositories&showIcons=true&iconColor=1f6feb&bgColor=000000&textColor=ffffff&borderColor=1f6feb" alt="TestoJarvis Banner">
 </p>
 
-# 🚀 TestoJarvis Git Init Assistant
+# 🚀 Auto Commit Push Assistant
 
 [![Lang](https://img.shields.io/badge/lang-Python3-blue?style=flat-square)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](./LICENSE)
