@@ -8,6 +8,7 @@ Modifié pour générer dynamiquement le message de commit à l'aide d'un LLM lo
 Dépendances :
 - pip install langchain openai tiktoken
 - Ollama installé avec un modèle : `ollama run mistral`
+- tests
 
 ================================================================================
 """
