@@ -8,7 +8,6 @@ Modifié pour générer dynamiquement le message de commit à l'aide d'un LLM lo
 Dépendances :
 - pip install langchain openai tiktoken
 - Ollama installé avec un modèle : `ollama run mistral`
-- tests
 
 ================================================================================
 """
@@ -71,6 +70,31 @@ Message court :
     
     return message
 
+def get_user_commit_message(ai_message):
+    """
+    Permet à l'utilisateur de modifier le message de commit proposé par l'IA.
+    """
+    print(f"\n🤖 Message proposé par l'IA : {ai_message}")
+    print("Options:")
+    print("  [Entrée] - Accepter le message proposé")
+    print("  [Texte]  - Saisir un nouveau message")
+    
+    user_input = input("Votre choix : ").strip()
+    
+    if not user_input:
+        return ai_message
+    
+    # Ajouter emoji si absent
+    if not user_input.startswith(("🚀", "✨", "🐛", "🔧", "🎨", "⚡", "🗑️", "📝")):
+        user_input = f"🔧 {user_input}"
+    
+    # Limiter à 50 caractères
+    if len(user_input) > 50:
+        user_input = user_input[:47] + "..."
+        print(f"⚠️ Message tronqué à 50 caractères : {user_input}")
+    
+    return user_input
+
 def main():
     
     print("🚀 Initialisation du dépôt Git local...")
@@ -84,12 +108,14 @@ def main():
     # Génération du commit message
     try:
         diff = get_git_diff()
-        commit_message = generate_commit_message_with_ai(diff)
-        print(f"🤖 Message généré : {commit_message}")
+        ai_message = generate_commit_message_with_ai(diff)
+        commit_message = get_user_commit_message(ai_message)
+        print(f"✅ Message final : {commit_message}")
     except Exception as e:
         print(f"⚠️ Erreur IA : {e}")
-        commit_message = "🚀 Auto commit"
-        print(f"📝 Message alternatif utilisé : {commit_message}")
+        fallback_message = "🚀 Auto commit"
+        commit_message = get_user_commit_message(fallback_message)
+        print(f"✅ Message final : {commit_message}")
 
     try:
         escaped_message = commit_message.replace('"', '\\"')
