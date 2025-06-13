@@ -107,4 +107,4 @@ MIT — libre d'utilisation, merci de créditer l’auteur 🙏
 ## ✍️ Auteur
 
 Développé par [Khalid HAFID-MEDHEB](https://www.linkedin.com/in/khalid-hafid-medheb-40451aa8/)
-TestoJarvis · Juin 2025
+Kallitests · Juin 2025
