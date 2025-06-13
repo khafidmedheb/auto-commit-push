@@ -1,218 +1,211 @@
 #!/usr/bin/env python3
 """
-🚀 Auto Commit Push Assistant
-Script intelligent pour initialiser un dépôt Git local et le pousser sur GitHub
-avec un message de commit généré automatiquement par une IA locale.
+================================================================================
+Git Repository Initialization Script for TestoJarvis Playwright Assistant
+================================================================================
+Modifié pour générer dynamiquement le message de commit à l’aide d’un LLM local
+
+Dépendances :
+- pip install langchain openai tiktoken
+- Ollama installé avec un modèle : `ollama run mistral`
+
+================================================================================
 """
+
+# TODO
+
+# PROMPT: quels sont les controles qu'on peut mettre dans un commit push classique vers un repo Github. Par exemple, un linter de code qui bloque le push si le code n'est pas propre. 
+# Merci.
+
+# RESULTATS:
+# Voici les principaux contrôles qu'on peut mettre en place dans un workflow commit/push vers GitHub :
+
+# ## 🔍 Contrôles côté local (Pre-commit hooks)
+
+# ### **Qualité de code**
+# - **Linters** : ESLint, Pylint, Flake8, RuboCop, TSLint
+# - **Formatters** : Black, Prettier, autopep8, gofmt
+# - **Analyseurs statiques** : SonarLint, Bandit (sécurité Python), MyPy (types Python)
+
+# ### **Tests et validation**
+# - **Tests unitaires** : Exécution automatique avant commit
+# - **Tests de couverture** : Seuil minimum requis
+# - **Validation de schémas** : JSON, YAML, XML
+# - **Vérification des dépendances** : Vulnérabilités, licences
+
+# ### **Contrôles structurels**
+# - **Messages de commit** : Format conventionnel (Conventional Commits)
+# - **Taille des fichiers** : Bloquer les gros fichiers binaires
+# - **Secrets** : Détection de clés API, mots de passe
+# - **Trailing whitespace** : Suppression des espaces en fin de ligne
+
+# ## 🛡️ Contrôles côté GitHub (GitHub Actions/Workflows)
+
+# ### **CI/CD Pipeline**
+# - **Build automatique** : Compilation, packaging
+# - **Tests d'intégration** : Tests end-to-end
+# - **Tests de performance** : Benchmarks
+# - **Tests de sécurité** : SAST, DAST, dependency scanning
+
+# ### **Contrôles de branche**
+# - **Branch protection rules** : Require PR reviews, status checks
+# - **Merge restrictions** : Squash, rebase policies
+# - **Required reviewers** : Code owners, équipes spécifiques
+
+# ## 🔧 Outils populaires
+
+# ### **Pre-commit (Python)**
+# ```yaml
+# repos:
+#   - repo: https://github.com/psf/black
+#     hooks:
+#       - id: black
+#   - repo: https://github.com/pycqa/flake8
+#     hooks:
+#       - id: flake8
+# ```
+
+# ### **Husky (JavaScript)**
+# ```json
+# {
+#   "husky": {
+#     "hooks": {
+#       "pre-commit": "lint-staged",
+#       "pre-push": "npm test"
+#     }
+#   }
+# }
+# ```
+
+# ### **GitHub Actions exemple**
+# ```yaml
+# name: Quality Check
+# on: [push, pull_request]
+# jobs:
+#   lint:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Run linter
+#         run: flake8 .
+#       - name: Run tests
+#         run: pytest
+# ```
+
+# ## ⚠️ Contrôles de sécurité avancés
+
+# - **GitLeaks** : Détection de secrets dans l'historique
+# - **Semgrep** : Analyse de sécurité du code
+# - **Dependabot** : Mise à jour automatique des dépendances
+# - **CodeQL** : Analyse de vulnérabilités GitHub
+
+# Ces contrôles permettent de maintenir une base de code propre, sécurisée et de qualité avant que le code n'atteigne le dépôt principal.
+
+# PROMPT:
+
+# A partir du script .py Python joint, j'envisage de commit push des fichiers sources Cypress (
+# .spec.js/.ts, .cy.js/.ts
+# .feature + .steps.js/.ts) et Playwright (.spec.js/.ts, .test.js/.ts
+# .feature + .steps.js/.ts). Ajoute un contrôle local de qualité de code dans le script joint, pour les cas Cypress et Playwright. Merci.
+
+# RESULTAT: lancer le prompt precedent
+
+# PROMPT: Mets à jour le README joint avec toutes les modifications précédentes dans le script auto_commit_push.py
+
 
 import os
 import subprocess
+import shlex
 import sys
-from pathlib import Path
 
-try:
-    # ✅ Import modernisé pour LangChain 0.3+
-    from langchain_ollama import OllamaLLM
-except ImportError:
-    print("❌ Installation requise: pip install -U langchain-ollama")
-    print("📦 Commande: pip install langchain-ollama")
-    sys.exit(1)
+# Langchain for AI commit message generation
+# from langchain.llms import Ollama
+from langchain_community.llms import Ollama
+from langchain.prompts import PromptTemplate
 
-# 🔧 Configuration du dépôt
+
+# Repository configuration
 REPO_NAME = "auto-commit-push"
 USERNAME = "khafidmedheb"
 REMOTE_URL = f"git@github.com:{USERNAME}/{REPO_NAME}.git"
-BRANCH_NAME = "main"
 
-# 🎨 Emojis pour les types de commits
-COMMIT_EMOJIS = {
-    'feat': '✨',
-    'fix': '🐛', 
-    'docs': '📝',
-    'style': '💄',
-    'refactor': '♻️',
-    'test': '✅',
-    'chore': '🔧',
-    'init': '🚀',
-    'update': '⬆️',
-    'perf': '⚡'
-}
+def run_cmd(cmd, check=True, capture_output=False):
+    result = subprocess.run(cmd, shell=True, check=check, text=True, capture_output=capture_output)
+    return result.stdout.strip() if capture_output else None
 
-def run_command(command, cwd=None, capture_output=True):
-    """Exécute une commande shell avec gestion d'erreurs"""
+def get_git_diff():
+    """
+    Récupère le diff des fichiers en staging.
+    """
     try:
-        result = subprocess.run(
-            command, 
-            shell=True, 
-            cwd=cwd, 
-            capture_output=capture_output,
-            text=True,
-            check=True
-        )
-        return result.stdout.strip() if capture_output else ""
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Erreur lors de l'exécution : {command}")
-        print(f"   Code d'erreur : {e.returncode}")
-        if e.stderr:
-            print(f"   Détails : {e.stderr}")
-        return None
+        return run_cmd("git diff --cached", capture_output=True)
+    except subprocess.CalledProcessError:
+        return ""
 
-def generate_ai_commit_message():
-    """Génère un message de commit intelligent via Ollama"""
-    try:
-        # 📋 Récupération des modifications Git
-        git_status = run_command("git status --porcelain")
-        git_diff = run_command("git diff --cached --name-only")
-        
-        if not git_status and not git_diff:
-            git_status = run_command("git ls-files")
-        
-        # 🤖 Prompt optimisé pour l'IA
-        prompt = f"""
-Analysez les modifications Git suivantes et générez un message de commit court et précis (max 50 caractères).
+def generate_commit_message_with_ai(diff_text):
+    """
+    Génère un message de commit via un LLM local avec Langchain (ex: Ollama).
+    """
+    if not diff_text.strip():
+        return "🔧 Mise à jour sans modification détectable"
 
-Fichiers modifiés/ajoutés :
-{git_status or git_diff or "Nouveaux fichiers"}
+    template = PromptTemplate.from_template("""
+Tu es un assistant développeur. Résume les modifications ci-dessous dans un message de commit Git court, clair et utile.
+
+Diff :
+{diff}
 
 Règles :
-- Format : <type>: <description>
-- Types : feat, fix, docs, style, refactor, test, chore, init
-- Description en anglais, concise et claire
-- Sans emoji (sera ajouté automatiquement)
-- Exemple : "feat: add user authentication"
+- Ligne unique
+- Commence par un emoji (ex: 🐛, ✨, 🔧, 🚀)
+- Utilise des verbes d'action (Ajout, Correction, Suppression, Refacto, etc.)
+- Pas de termes vagues comme "update"
 
-Message de commit :"""
+Message :
+""")
 
-        # ✅ Utilisation modernisée de LangChain
-        llm = OllamaLLM(model="mistral")
-        message = llm.invoke(prompt).strip()
-        
-        # 🧹 Nettoyage du message
-        message = message.replace('"', '').replace("'", '')
-        if message.lower().startswith('message de commit'):
-            message = message.split(':', 1)[-1].strip()
-        
-        return message[:50] if len(message) > 50 else message
-        
-    except Exception as e:
-        print(f"⚠️  Erreur IA : {e}")
-        return None
-
-def add_emoji_to_commit(message):
-    """Ajoute l'emoji approprié au message de commit"""
-    message_lower = message.lower()
-    
-    # 🎯 Détection du type de commit
-    for commit_type, emoji in COMMIT_EMOJIS.items():
-        if message_lower.startswith(f"{commit_type}:"):
-            return f"{emoji} {message[len(commit_type)+1:].strip()}"
-    
-    # 🎲 Emoji par défaut selon le contenu
-    if any(word in message_lower for word in ['add', 'create', 'new']):
-        return f"{COMMIT_EMOJIS['feat']} {message}"
-    elif any(word in message_lower for word in ['fix', 'bug', 'error']):
-        return f"{COMMIT_EMOJIS['fix']} {message}"
-    elif any(word in message_lower for word in ['update', 'upgrade']):
-        return f"{COMMIT_EMOJIS['update']} {message}"
-    elif any(word in message_lower for word in ['doc', 'readme']):
-        return f"{COMMIT_EMOJIS['docs']} {message}"
-    else:
-        return f"{COMMIT_EMOJIS['init']} {message}"
-
-def get_user_commit_message(ai_message):
-    """Interface utilisateur pour valider/modifier le message"""
-    print(f"\n🤖 Message proposé par l'IA : {ai_message}")
-    print("\nOptions:")
-    print("  [Entrée] - Accepter le message proposé")
-    print("  [Texte]  - Saisir un nouveau message")
-    
-    user_input = input("Votre choix : ").strip()
-    
-    if user_input:
-        return user_input
-    else:
-        return ai_message
-
-def init_git_workflow():
-    """Workflow complet d'initialisation Git"""
-    current_dir = Path.cwd()
-    print(f"📁 Répertoire courant : {current_dir}")
-    
-    # 🚀 Initialisation Git
-    print("🚀 Initialisation du dépôt Git local...")
-    if not (current_dir / ".git").exists():
-        if run_command("git init") is None:
-            return False
-    
-    # 📋 Ajout des fichiers
-    print("📋 Ajout des fichiers...")
-    if run_command("git add .") is None:
-        return False
-    
-    # 🤖 Génération du message de commit
-    ai_message = generate_ai_commit_message()
-    
-    if ai_message:
-        final_message = get_user_commit_message(ai_message)
-    else:
-        print("⚠️  L'IA n'est pas disponible, saisie manuelle :")
-        final_message = input("Message de commit : ").strip()
-        if not final_message:
-            final_message = "Initial commit"
-    
-    # 🎨 Ajout de l'emoji
-    final_message = add_emoji_to_commit(final_message)
-    print(f"✅ Message final : {final_message}")
-    
-    # 💾 Commit
-    commit_cmd = f'git commit -m "{final_message}"'
-    if run_command(commit_cmd) is None:
-        return False
-    print(f"✅ Commit créé : {final_message}")
-    
-    # 🌿 Création/changement de branche
-    current_branch = run_command("git branch --show-current")
-    if current_branch != BRANCH_NAME:
-        if run_command(f"git checkout -b {BRANCH_NAME}") is None:
-            return False
-    
-    # 🔗 Configuration du remote
-    remotes = run_command("git remote")
-    if "origin" not in (remotes or ""):
-        if run_command(f"git remote add origin {REMOTE_URL}") is None:
-            return False
-        print(f"🔗 Remote configuré : {REMOTE_URL}")
-    
-    # 🚀 Push vers GitHub
-    push_cmd = f"git push -u origin {BRANCH_NAME}"
-    print("🚀 Push vers GitHub...")
-    if run_command(push_cmd, capture_output=False) is None:
-        return False
-    
-    print("✅ Projet poussé sur GitHub avec succès !")
-    print(f"🌐 URL : https://github.com/{USERNAME}/{REPO_NAME}")
-    return True
+    prompt = template.format(diff=diff_text)
+    llm = Ollama(model="mistral")  # ⚠️ nécessite que ollama tourne localement
+    return llm.predict(prompt).strip()
 
 def main():
-    """Fonction principale"""
-    print("=" * 50)
-    print("🚀 AUTO COMMIT PUSH ASSISTANT")
-    print("=" * 50)
     
-    # ✅ Vérifications préalables
-    if not run_command("git --version"):
-        print("❌ Git n'est pas installé ou accessible")
-        return
-    
-    if not run_command("ollama --version"):
-        print("⚠️  Ollama non détecté - l'IA ne sera pas disponible")
-    
-    # 🚀 Lancement du workflow
-    if init_git_workflow():
-        print("\n🎉 Workflow terminé avec succès !")
-    else:
-        print("\n❌ Erreur lors du workflow")
-        sys.exit(1)
+    print("🚀 Initialisation du dépôt Git local...")
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+    if not os.path.isdir(".git"):
+        run_cmd("git init")
+
+    run_cmd("git add .")
+
+    # Génération du commit message
+    try:
+        diff = get_git_diff()
+        commit_message = generate_commit_message_with_ai(diff)
+        print(f"🤖 Message généré : {commit_message}")
+    except Exception as e:
+        print(f"⚠️ Erreur IA : {e}")
+        commit_message = "🚀 Commit auto – fallback"
+        print(f"📝 Message alternatif utilisé : {commit_message}")
+
+    try:
+        escaped_message = commit_message.replace('"', '\\"')
+        run_cmd(f'git commit -m "{escaped_message}"')
+        print(f"✅ Commit créé : {commit_message}")
+    except subprocess.CalledProcessError:
+        print("⚠️ Aucun changement à commiter.")
+
+    run_cmd("git branch -M main")
+
+    try:
+        run_cmd("git remote remove origin")
+    except subprocess.CalledProcessError:
+        pass
+
+    run_cmd(f"git remote add origin {REMOTE_URL}")
+    print(f"🔗 Remote configuré : {REMOTE_URL}")
+    run_cmd("git push -u origin main")
+    print(f"✅ Projet poussé sur GitHub avec succès !")
 
 if __name__ == "__main__":
     main()
