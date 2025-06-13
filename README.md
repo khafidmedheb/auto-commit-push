@@ -1,6 +1,5 @@
 ## ✅ `README.md` — Format Premium
 
-
 <!-- BANNER -->
 <p align="center">
   <img src="https://readme-hero-stats.vercel.app/api?username=khafidmedheb&title=TestoJarvis%20%7C%20AI-powered%20Git%20Init%20Automation&font=Source+Code+Pro&show=followers,repositories&showIcons=true&iconColor=1f6feb&bgColor=000000&textColor=ffffff&borderColor=1f6feb" alt="TestoJarvis Banner">
@@ -20,11 +19,13 @@
 
 ## 📦 Fonctionnalités
 
-- 🧠 Génération dynamique du message de commit avec un LLM local (`mistral`, `phi`, etc.)
-- 🔐 Connexion GitHub via SSH (clé préconfigurée)
-- 🧱 Workflow Git complet : `init`, `add`, `commit`, `branch`, `remote`, `push`
-- 🤖 Fallback manuel si l'IA échoue à générer un message
-- 🧑‍💻 Parfait pour indie devs, agents IA, automatisations intelligentes
+- 🧠 **Génération IA intelligente** : Messages de commit générés par LLM local (`mistral`, `phi`, etc.)
+- ✏️ **Édition interactive** : Possibilité de modifier manuellement le message proposé par l'IA
+- 📏 **Messages optimisés** : Respect des bonnes pratiques Git (≤ 50 caractères)
+- 🔐 **Connexion sécurisée** : GitHub via SSH (clé préconfigurée)
+- 🧱 **Workflow complet** : `init`, `add`, `commit`, `branch`, `remote`, `push`
+- 🤖 **Fallback robuste** : Option manuelle si l'IA échoue
+- 🧑‍💻 **Dev-friendly** : Parfait pour indie devs, agents IA, automatisations
 
 ---
 
@@ -43,43 +44,90 @@
 git clone git@github.com:khafidmedheb/testojarvis-playwright.git
 cd testojarvis-playwright
 pip install -r requirements.txt
-````
+```
 
 ---
 
 ## 🚀 Utilisation
 
 ```bash
-python init_git_testojarvis.py
+python auto_commit_push.py
 ```
 
-✅ Le script :
+### 💡 Workflow interactif
 
-* Initialise le dépôt si nécessaire
-* Met en scène tous les fichiers (`git add .`)
-* Génère un message de commit intelligent (diff → résumé → message)
-* Commit + push vers GitHub (branche `main`)
-* Configure automatiquement l'origine SSH (`origin`)
+1. **Génération IA** : Le script analyse les modifications et propose un message
+2. **Validation utilisateur** : 
+   - `[Entrée]` → Accepter le message proposé
+   - `[Texte]` → Saisir un nouveau message personnalisé
+3. **Validation automatique** : Ajout d'emoji et limitation à 50 caractères
+4. **Commit & Push** : Envoi automatique vers GitHub
+
+### ✨ Exemple d'utilisation
+
+```bash
+🚀 Initialisation du dépôt Git local...
+
+🤖 Message proposé par l'IA : ✨ Add user authentication module
+
+Options:
+  [Entrée] - Accepter le message proposé
+  [Texte]  - Saisir un nouveau message
+Votre choix : Fix login bug
+
+✅ Message final : 🔧 Fix login bug
+✅ Commit créé : 🔧 Fix login bug
+🔗 Remote configuré : git@github.com:khafidmedheb/auto-commit-push.git
+✅ Projet poussé sur GitHub avec succès !
+```
 
 ---
 
-## ✨ Exemple de commit généré
+## 🎨 Messages de commit intelligents
 
-```bash
-✨ Ajout de la configuration automatique du remote SSH GitHub
-```
+Le script génère des messages suivant les conventions Git :
+
+| Emoji | Type | Exemple |
+|-------|------|---------|
+| ✨ | Nouvelle fonctionnalité | `✨ Add login feature` |
+| 🐛 | Correction de bug | `🐛 Fix authentication error` |
+| 🔧 | Configuration/maintenance | `🔧 Update config settings` |
+| 🚀 | Déploiement/release | `🚀 Initial commit` |
+| 📝 | Documentation | `📝 Update README` |
+| ⚡ | Performance | `⚡ Optimize database queries` |
 
 ---
 
 ## 🧠 Stack Technique
 
-| Technologie      | Rôle                                                       |
-| ---------------- | ---------------------------------------------------------- |
-| Python           | Script principal et logique Git                            |
-| Git              | Initialisation, commit, branche, push                      |
-| Langchain        | Orchestration de prompt IA                                 |
-| Ollama + Mistral | LLM local pour générer des messages de commit intelligents |
-| SSH GitHub       | Connexion sécurisée pour le dépôt distant                  |
+| Technologie | Rôle |
+|-------------|------|
+| **Python** | Script principal et logique Git |
+| **Git** | Initialisation, commit, branche, push |
+| **Langchain** | Orchestration de prompt IA |
+| **Ollama + Mistral** | LLM local pour messages intelligents |
+| **SSH GitHub** | Connexion sécurisée pour le dépôt distant |
+| **Interface CLI** | Interaction utilisateur en temps réel |
+
+---
+
+## 🔧 Configuration
+
+### Personnalisation du dépôt
+
+```python
+# Repository configuration
+REPO_NAME = "votre-repo"
+USERNAME = "votre-username"
+REMOTE_URL = f"git@github.com:{USERNAME}/{REPO_NAME}.git"
+```
+
+### Modèles LLM supportés
+
+- `mistral` (recommandé)
+- `phi`
+- `llama2`
+- `codellama`
 
 ---
 
@@ -94,17 +142,24 @@ python init_git_testojarvis.py
 
 ## 🤝 Contribuer
 
-Tu veux améliorer ce script, ajouter d’autres modèles, ou en faire une action GitHub ? N’hésite pas à ouvrir une PR ou une issue 💡
+Tu veux améliorer ce script, ajouter d'autres modèles, ou en faire une action GitHub ? N'hésite pas à ouvrir une PR ou une issue 💡
+
+### Idées d'améliorations
+
+- 🎯 Support pour d'autres plateformes Git (GitLab, Bitbucket)
+- 🔍 Contrôles qualité pré-commit (linting, tests)
+- 📋 Templates de messages personnalisables
+- 🌐 Interface web pour configuration
 
 ---
 
 ## 🪪 Licence
 
-MIT — libre d'utilisation, merci de créditer l’auteur 🙏
+MIT — libre d'utilisation, merci de créditer l'auteur 🙏
 
 ---
 
 ## ✍️ Auteur
 
-Développé par [Khalid HAFID-MEDHEB](https://www.linkedin.com/in/khalid-hafid-medheb-40451aa8/)
+Développé par [Khalid HAFID-MEDHEB](https://www.linkedin.com/in/khalid-hafid-medheb-40451aa8/)  
 Kallitests · Juin 2025
