@@ -133,9 +133,13 @@ REMOTE_URL = f"git@github.com:{USERNAME}/{REPO_NAME}.git"
 
 ## 📊 GitHub Stats
 
-<p align="left">
-  <img src="https://github-readme-stats.vercel.app/api?username=khafidmedheb&show_icons=true&theme=radical" alt="GitHub Stats" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=khafidmedheb&layout=compact&theme=radical" alt="Top Languages" />
+<p align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=khafidmedheb&show_icons=true&theme=tokyonight&count_private=true&include_all_commits=true&hide_border=true" alt="GitHub Stats" width="48%" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=khafidmedheb&layout=compact&theme=tokyonight&langs_count=8&hide_border=true&card_width=320" alt="Top Languages" width="48%" />
+</p>
+
+<p align="center">
+  <img src="https://github-readme-streak-stats.herokuapp.com?user=khafidmedheb&theme=tokyonight&hide_border=true&stroke=0000&background=0D1117&ring=1F6FEB&fire=1F6FEB&currStreakLabel=FFFFFF" alt="GitHub Streak Stats" width="60%" />
 </p>
 
 ---
