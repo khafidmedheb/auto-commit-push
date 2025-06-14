@@ -157,11 +157,9 @@ def init_and_push():
     
     # Push vers GitHub
     print("🚀 Push vers GitHub en cours...")
-    push_result = run_command("git push -u origin main", capture_output=False, check=False)
+    push_result = run_command("git push -u origin main", capture_output=True, check=False)
 
-    print(push_result)
-    
-    if push_result is not None:
+    if push_result is not None or "Everything up-to-date" in str(push_result):
         print("✅ Projet poussé sur GitHub avec succès !")
     else:
         print("⚠️ Erreur lors du push. Vérifiez votre connexion SSH et les permissions du dépôt.")
