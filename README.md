@@ -168,12 +168,20 @@ export GITHUB_USERNAME="votre-username"
 ## 📊 GitHub Stats
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=khafidmedheb&show_icons=true&theme=tokyonight&count_private=true&include_all_commits=true&hide_border=true" alt="GitHub Stats" width="48%" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=khafidmedheb&layout=compact&theme=tokyonight&langs_count=8&hide_border=true&card_width=320" alt="Top Languages" width="48%" />
+  <img src="https://github-readme-stats.vercel.app/api?username=khafidmedheb&show_icons=true&theme=tokyonight&count_private=true&include_all_commits=true&hide_border=true&custom_title=GitHub%20Statistics&disable_animations=false" alt="GitHub Stats" width="48%" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=khafidmedheb&layout=compact&theme=tokyonight&langs_count=10&hide_border=true&card_width=320&exclude_repo=khafidmedheb" alt="Top Languages" width="48%" />
 </p>
 
 <p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com?user=khafidmedheb&theme=tokyonight&hide_border=true&stroke=0000&background=0D1117&ring=1F6FEB&fire=1F6FEB&currStreakLabel=FFFFFF" alt="GitHub Streak Stats" width="60%" />
+  <img src="https://github-readme-streak-stats.herokuapp.com?user=khafidmedheb&theme=tokyonight&hide_border=true&stroke=0000&background=0D1117&ring=1F6FEB&fire=1F6FEB&currStreakLabel=FFFFFF&sideNums=FFFFFF&currStreakNum=1F6FEB&dates=70A5FD" alt="GitHub Streak Stats" width="60%" />
+</p>
+
+<p align="center">
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=khafidmedheb&theme=tokyo-night&bg_color=0D1117&color=1F6FEB&line=1F6FEB&point=FFFFFF&area=true&hide_border=true" alt="Contribution Graph" width="95%" />
+</p>
+
+<p align="center">
+  <img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=khafidmedheb&theme=tokyonight" alt="Profile Summary" width="95%" />
 </p>
 
 ---
