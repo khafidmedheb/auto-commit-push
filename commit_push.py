@@ -30,6 +30,18 @@ def run_cmd(cmd, check=True, capture_output=False):
     result = subprocess.run(cmd, shell=True, check=check, text=True, capture_output=capture_output)
     return result.stdout.strip() if capture_output else None
 
+def check_git_changes():
+    """
+    Vérifie s'il y a des changements à commiter.
+    Retourne True s'il y a des changements, False sinon.
+    """
+    try:
+        # Vérifier les fichiers modifiés, ajoutés ou supprimés
+        status = run_cmd("git status --porcelain", capture_output=True)
+        return bool(status.strip())
+    except subprocess.CalledProcessError:
+        return False
+
 def get_git_diff():
     """
     Récupère le diff des fichiers en staging.
@@ -79,13 +91,25 @@ def main():
     if not os.path.isdir(".git"):
         run_cmd("git init")
 
+    # Vérifier s'il y a des changements avant de faire quoi que ce soit
+    if not check_git_changes():
+        print("ℹ️  Aucun changement détecté dans le dépôt.")
+        print("✨ Votre dépôt est déjà à jour !")
+        return
+
+    print("📁 Changements détectés, ajout des fichiers...")
     run_cmd("git add .")
 
-    # Génération du commit message
+    # Génération du commit message seulement s'il y a des changements
     try:
         diff = get_git_diff()
+        if not diff.strip():
+            print("⚠️ Aucun fichier en staging après git add.")
+            return
+            
+        print("🤖 Génération du message de commit via IA...")
         commit_message = generate_commit_message_with_ai(diff)
-        print(f"🤖 Message généré : {commit_message}")
+        print(f"✅ Message généré : {commit_message}")
     except Exception as e:
         print(f"⚠️ Erreur IA : {e}")
         commit_message = "🚀 Auto commit"
@@ -95,20 +119,29 @@ def main():
         escaped_message = commit_message.replace('"', '\\"')
         run_cmd(f'git commit -m "{escaped_message}"')
         print(f"✅ Commit créé : {commit_message}")
-    except subprocess.CalledProcessError:
-        print("⚠️ Aucun changement à commiter.")
+    except subprocess.CalledProcessError as e:
+        print(f"⚠️ Erreur lors du commit : {e}")
+        return
 
+    print("🔄 Configuration de la branche principale...")
     run_cmd("git branch -M main")
 
     try:
-        run_cmd("git remote remove origin")
+        run_cmd("git remote remove origin", check=False)
     except subprocess.CalledProcessError:
         pass
 
+    print("🔗 Configuration du remote GitHub...")
     run_cmd(f"git remote add origin {REMOTE_URL}")
-    print(f"🔗 Remote configuré : {REMOTE_URL}")
-    run_cmd("git push -u origin main")
-    print(f"✅ Projet poussé sur GitHub avec succès !")
+    print(f"📡 Remote configuré : {REMOTE_URL}")
+    
+    try:
+        print("🚀 Push vers GitHub en cours...")
+        run_cmd("git push -u origin main")
+        print("✅ Projet poussé sur GitHub avec succès !")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Erreur lors du push : {e}")
+        print("🔧 Vérifiez votre configuration SSH GitHub.")
 
 if __name__ == "__main__":
     main()
