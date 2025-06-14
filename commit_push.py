@@ -69,6 +69,10 @@ Règles :
 - Commence par un emoji (🐛, ✨, 🔧, 🚀)
 - Verbe d'action court (Add, Fix, Update, Remove)
 - Pas de ponctuation finale
+- La première lettre prend une majuscule.
+- Ne pas terminer le sujet par un point.
+- Utiliser une même forme verbale pour tous les commits.
+- Le message doit expliquer le pourquoi.                                        
 
 Message court :
 """)
