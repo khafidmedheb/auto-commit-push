@@ -3,7 +3,7 @@
 ================================================================================
 Git Repository Initialization Script for TestoJarvis Playwright Assistant
 ================================================================================
-Modifié pour générer dynamiquement le message de commit à l’aide d’un LLM local
+Modifié pour générer dynamiquement le message de commit à l'aide d'un LLM local
 
 Dépendances :
 - pip install langchain openai tiktoken
@@ -129,9 +129,28 @@ REPO_NAME = "auto-commit-push"
 USERNAME = "khafidmedheb"
 REMOTE_URL = f"git@github.com:{USERNAME}/{REPO_NAME}.git"
 
-def run_cmd(cmd, check=True, capture_output=False):
-    result = subprocess.run(cmd, shell=True, check=check, text=True, capture_output=capture_output)
+def run_cmd(cmd, capture_output=False):
+    result = subprocess.run(
+        cmd,
+        shell=True,
+        capture_output=capture_output,
+        text=True,
+        encoding='utf-8',  # Ajouté pour éviter UnicodeDecodeError
+        errors='ignore'    # Ignore les erreurs d'encodage restantes
+    )
     return result.stdout.strip() if capture_output else None
+
+
+def check_git_status():
+    """
+    Vérifie s'il y a des modifications à commiter.
+    Retourne True s'il y a des changements, False sinon.
+    """
+    try:
+        status_output = run_cmd("git status --porcelain", capture_output=True)
+        return bool(status_output.strip())
+    except subprocess.CalledProcessError:
+        return False
 
 def get_git_diff():
     """
@@ -176,11 +195,23 @@ def main():
     if not os.path.isdir(".git"):
         run_cmd("git init")
 
+    # Vérifier s'il y a des modifications avant d'ajouter
+    if not check_git_status():
+        print("ℹ️ Aucune modification détectée dans le répertoire de travail.")
+        print("✅ Le dépôt est à jour, aucune action nécessaire.")
+        return
+
     run_cmd("git add .")
+
+    # Vérifier à nouveau après l'ajout (au cas où il n'y aurait que des fichiers ignorés)
+    diff = get_git_diff()
+    if not diff.strip():
+        print("ℹ️ Aucune modification en staging après git add.")
+        print("✅ Tous les fichiers sont soit ignorés, soit déjà commitées.")
+        return
 
     # Génération du commit message
     try:
-        diff = get_git_diff()
         commit_message = generate_commit_message_with_ai(diff)
         print(f"🤖 Message généré : {commit_message}")
     except Exception as e:
@@ -193,7 +224,8 @@ def main():
         run_cmd(f'git commit -m "{escaped_message}"')
         print(f"✅ Commit créé : {commit_message}")
     except subprocess.CalledProcessError:
-        print("⚠️ Aucun changement à commiter.")
+        print("⚠️ Erreur lors de la création du commit.")
+        return
 
     run_cmd("git branch -M main")
 
