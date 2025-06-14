@@ -17,7 +17,8 @@ from pathlib import Path
 # Configuration du dépôt
 REPO_NAME = "auto-commit-push"
 USERNAME = "khafidmedheb"
-REMOTE_URL = f"git@github.com:{USERNAME}/{REPO_NAME}.git"
+# REMOTE_URL = f"git@github.com:{USERNAME}/{REPO_NAME}.git"
+REMOTE_URL = f"https://github.com/{USERNAME}/{REPO_NAME}.git"
 
 def run_command(command, capture_output=True, check=True):
     """Exécute une commande système avec gestion d'erreurs."""
