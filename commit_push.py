@@ -6,7 +6,7 @@ Script intelligent pour initialiser un dépôt Git local et le pousser automatiq
 avec des messages de commit générés par IA locale via Langchain + Ollama.
 
 Auteur: Khalid HAFID-MEDHEB
-Date: Juin 2025
+Date: Juin 2025 test
 """
 
 import subprocess
