@@ -13,5 +13,15 @@
   "interactive": true,
   "auto_install_deps": true,
   "max_commit_length": 50,
-  "project_type": "nodejs"
+  "project_type": "nodejs",
+  "quality_checks": {
+    "enabled": true,
+    "eslint": true,
+    "prettier": true,
+    "typescript": true,
+    "cypress": true,
+    "playwright": true,
+    "auto_fix": true,
+    "strict_mode": false
+  }
 }
