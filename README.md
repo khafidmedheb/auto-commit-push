@@ -10,7 +10,7 @@
 [![Lang](https://img.shields.io/badge/lang-Python3.8+-blue?style=flat-square)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](./LICENSE)
 [![Status](https://img.shields.io/badge/status-active-brightgreen?style=flat-square)](#)
-[![GitHub last commit](https://img.shields.io/github/last-commit/khafidmedheb/testojarvis-playwright?style=flat-square)](https://github.com/khafidmedheb/testojarvis-playwright)
+[![GitHub last commit](https://img.shields.io/github/last-commit/khafidmedheb/auto-commit-push?style=flat-square)](https://github.com/khafidmedheb/auto-commit-push)
 [![Contact](https://img.shields.io/badge/Contact-khafid1506@gmail.com-red?logo=gmail&logoColor=white)](mailto:khafid1506@gmail.com)
 
 > ⚡️ Advanced AI-powered Git automation tool with intelligent commit message generation, pre-commit hooks, and comprehensive repository management via Langchain + Ollama.
@@ -60,8 +60,8 @@
 
 ```bash
 # Clone the repository
-git clone git@github.com:khafidmedheb/testojarvis-playwright.git
-cd testojarvis-playwright
+git clone git@github.com:khafidmedheb/auto-commit-push.git
+cd auto-commit-push
 
 # Install dependencies (auto-installed if missing)
 pip install langchain-ollama
@@ -359,8 +359,8 @@ We welcome contributions! Here's how you can help improve the project:
 
 ### Development Setup
 ```bash
-git clone git@github.com:khafidmedheb/testojarvis-playwright.git
-cd testojarvis-playwright
+git clone git@github.com:khafidmedheb/auto-commit-push.git
+cd auto-commit-push
 python -m venv venv
 source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install -r requirements-dev.txt
@@ -411,8 +411,8 @@ Senior AI Developer & Automation Specialist
 - [Python Type Hints](https://docs.python.org/3/library/typing.html) - Code quality improvement
 
 ### Community & Support
-- 💬 **Issues**: [GitHub Issues](https://github.com/khafidmedheb/testojarvis-playwright/issues)
-- 🚀 **Discussions**: [GitHub Discussions](https://github.com/khafidmedheb/testojarvis-playwright/discussions)  
+- 💬 **Issues**: [GitHub Issues](https://github.com/khafidmedheb/auto-commit-push/issues)
+- 🚀 **Discussions**: [GitHub Discussions](https://github.com/khafidmedheb/auto-commit-push/discussions)  
 - 📧 **Direct Contact**: [khafid1506@gmail.com](mailto:khafid1506@gmail.com)
 
 ---
